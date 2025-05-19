@@ -111,4 +111,69 @@ $$x_0a^{n-1} + x_1a^{n-2} + ... + x_{n-2}a + x_{n-1}$$
 - Helps reduce clustering and distrubtes values well. This should be intuitive since multiplication by different powers is used as a way to spread out the influence of each component across the resulting hash code.
 
 Cyclic-Shift Hash Codes:
-- 
+- Use bitwise shifts to mix values.
+```.py
+def hash_code(s):
+    mask = (1 << 32) - 1 #gives a mask of 32 1's
+    h = 0
+    for character in s:
+        # h << 5 moves bits 5 places to the left, the mask makes sure that the lower 32 bits are kept only. 
+        # h >> 27 brings out the top 5 bits (which weere shifted out back around to the right side). 
+        # | puts these two parts together, simulating a left rotate by 5 bits.
+        h = (h << 5 & mask) | (h >> 27) 
+        h += ord(character)
+    return h
+```
+### Hash Codes in Python:
+- `hash(x)` is Python's in built hash function.
+- Only immutable types are hashable (eg. `int`, `str`, `tuple`, `frozenset`).
+- Custom classes can define `__hash__()` using immutable fields.
+- Hash must be consistent with `__eq__()`, ie. `x == y` $\implies$ `hash(x) == hash(y)`
+
+### Compression Functions:
+
+Purpose: Convert arbitrary integer hash code to bucket index: *[0, N-1]*.
+
+The Division Method:
+- Map an integer to $i \mod N$, where *N* is the size of the bucket array, is a fixed positive integer.
+- Additionally if we take *N* to be a prime number, then this compression function helps "spread out" distribution of hashed values.
+
+The MAD Method:
+- The **Division Method** will have problems w/ inputs that are sequenced/patterned. ie. in the form of $pN+q$ for fixed q, (counting by q's), will lead to many collisions.
+- the **MAD** method or **Multiply-Add-and-Divide** method maps an integer*i* to $[(ai+b) \mod p] \mod N$, w/ $N$ as the size of the bucket array, $p$ is a prime number largern than $N$, and $a$ and $b$ are integers chosen at random from the interval $[0, p-1]$, $a>0$. 
+
+### Collision-Handling Schemes:
+
+Seperate Chaining:
+
+- Each bucket $A[j]$ holds a secondary structure (eg. list) of $(k,v)$ pairs.
+
+Here is an example:
+
+![alt text](image-2.png)
+
+*A hash table of size 13, storing 10 items with integer keys, with collisions resolved by seperate chaining. For simplicity, we do not show the values associated with the keys.*
+
+- In the worst case, operations on a individual bucket take time proportional to the size of the bucket. Assuming a good hash function to index the $n$ items in our map of bucket array capacity $N$, the expected size of a bucket is $n/N$. Thus, assuming a good hash function core operations run in $O(\lceil n/N \rceil)$, this ratio $\lambda = n/N$ is called the **Load Factor**.
+
+- The load factor should be bounded by a small constant; preferably less than 1. As long as $\lambda$ is $O(1)$; then core operations on the hash table run in $O(1)$ expected time.
+
+### Open Addressing:
+
+- Separate chaining rule has its advantages, but it requires an auxiliary data structure (a list) to hold ites with colliding keys. What if we use the alternative approach of always storing each item directly in a table slot? There are variats of this approach, collectively refered to as **open adressing*. 
+
+Variants:
+
+1. Linear Probing: Probe $a[(h(k) + i) \mod n]$
+    - If we try to insert an item $(k,v)$ into a bucket $A[j]$ that is already occupied, where $j = h(k)$, then we next try $a[(j+1) \mod n]$; if $a[(j+1) \mod n] is also occupied, then we try $a[(j+2) \mod n]$, and so on until we find an empty bucket that can accept the new item. once this bucket is located; we simply insert the item there.  
+
+![alt text](image-3.png)
+*Inserstion into a hash table with integer keys using linear probing, values associated with keys are not shown.**
+
+- Linear probing tends to cluser the items of a map into contiguous runs, which can cause searches to slow considerably. This is known as **primary clustering**.
+
+2. Quadratic Probing:
+    - Probe $a[(h(k)+i^2) \mod n]$, same idea as before but quadratically look at next open block.
+    - Spread out more than linear probing, but... still suffers from a similar problem (albeit less) known as **secondary clustering**.
+
+    
