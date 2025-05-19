@@ -106,7 +106,7 @@ Bit Interpretation:
 
 Polynomial Hash Code:
 - Treat key as a tuple of components (eg. characters) and compute:
-$$x_0a^{n-1} + x_1a^{n-2} + ... + x_{n-2}a + x_{n-1}}$$ 
+$$x_0a^{n-1} + x_1a^{n-2} + ... + x_{n-2}a + x_{n-1}$$ 
 - Multiplies each component by a power of constant *a* (commonly 33, 37, 39, or 41).
 - Helps reduce clustering and distrubtes values well. This should be intuitive since multiplication by different powers is used as a way to spread out the influence of each component across the resulting hash code.
 
