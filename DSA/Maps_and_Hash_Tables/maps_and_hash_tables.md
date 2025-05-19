@@ -81,6 +81,34 @@ Conceptual Warm-up:
 
 ![alt text](image-1.png)
 
-## Hash Functions:
+### Hash Functions:
 
+**Hash Function:** A hash function *h*, maps each key *k* to an integer in the range *[0, N-1]*, where *N* is the capacity of the bucket array for a hash table.
 
+The main idea is that with such a *hash function*, we use the hash function value *h(k)*, as an index into our bucket array, *A*, instead of the key*k*, That is we store the item *(k, v)* in the bucket *A[h(k)]*.
+
+**Collision:** If there are two or more keys with the same hash value, then two different items will be mapped to the same bucket *A*. In this case, we say that a collision has occured.
+
+Good hash functions minimize collisions and are fast to compute.
+
+The hash function, *h(k)* is commonly broken down into a two part process.
+1. Hash Code: Converts key to an integer.
+2. Compression Function: Maps that integer to *[0, N-1]*
+
+### Hash Codes:
+
+We desire that the set of hash codes assigned to our keys should avoid collisions as much as possible (this is because if the hash codes of our keys cause collisions, then there is no hope for our compression function to avoid them).
+
+Bit Interpretation:
+- Keys (eg. 314, 3.14, etc) can be interpreted as integers from their binary represnetation.
+- For longer keys, compress high and low 32 bits, using exculusive or, or summing and ignoring overflow.
+- Bit interpretation is not the best hash code approach as it causes lots of unwanted collisions for common groups of strings. Notice that it doesn't really take into account the ordering of characters thus using this function would result in collisions for `stop`, `tops`, `pots`, etc. A better hash code should take into consideration the position of the $x_i$'s.
+
+Polynomial Hash Code:
+- Treat key as a tuple of components (eg. characters) and compute:
+$$x_0a^{n-1} + x_1a^{n-2} + ... + x_{n-2}a + x_{n-1}}$$ 
+- Multiplies each component by a power of constant *a* (commonly 33, 37, 39, or 41).
+- Helps reduce clustering and distrubtes values well. This should be intuitive since multiplication by different powers is used as a way to spread out the influence of each component across the resulting hash code.
+
+Cyclic-Shift Hash Codes:
+- 
