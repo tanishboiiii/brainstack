@@ -51,6 +51,36 @@ for piece in open(filename).read().lower().split():
 
 With this you can now look through `freq` dictionary to find word frequency, ex. max word frequency
 
+## Hash Tables
 
+A hash table is a fundemental data structure for implementing a **map (or dictionary)**. Python's built in `dict` is based on a hash table. It allows fast-access to data  using keys via syntax like `M[k]`.
+
+Conceptual Warm-up:
+- Imagine keys are integers in the range `0` to `N-1`, for some large `N`
+- We can represent the map using a lookup table (array) of length `N`, where the index corresponds to the key.
+- Example: A lookup tabe of length 11 storing (1,D), (3,Z), (6,C), (7,Q). Values would be stored directly at the index corresponding to the key.
+
+![alt text](image.png)
+
+- Operations like `__get__item`, `__setitem__`, and `__delitem__` can be done in *O(1)* worst-case time in this setup.
+
+**Limitations of Direct Lookup Table:**
+1. Storage inefficiency if `N >> n` there is too much unused space.
+2. Keys in maps are not necessarily integers.
+
+**Solution? (Hash Tables):**
+- Use a hash function to map any key to an integer index in `[0, N-1]`.
+- Goal: Distribute keys evenly across the array to avoid clustering.
+- Resulting structure bucket array. (Figure coming...)
+
+**Collisions and Buckets:**
+- Different keys may hash to the same index -> this is a collision.
+- Resolve collisions by having buckets at each index.
+    - Each bucket is a collection (eg a list or linked lists of key-value pairs)
+    - Example: Bucket at index 4 holds [(25, C), (3, F), (14, Z)]
+
+![alt text](image-1.png)
+
+## Hash Functions:
 
 
